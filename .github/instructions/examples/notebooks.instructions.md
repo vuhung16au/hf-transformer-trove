@@ -15,6 +15,21 @@ This instruction file applies specifically to all Jupyter notebook files (`.ipyn
 - **Title and Learning Objectives**: Start each notebook with a clear title and list of learning objectives
 - **Progressive Structure**: Follow the consistent cell structure: Import → Load Data → Process → Model → Evaluate → Visualize
 - **Section Summaries**: End each major section with summary points or key takeaways
+- **Always end with author footer**: Include author profile, LinkedIn, and GitHub links at the end
+  ```markdown
+  ---
+  
+  ## About the Author
+  
+  **Vu Hung Nguyen** - AI Engineer & Researcher
+  
+  Connect with me:
+  - 🌐 **Website**: [vuhung16au.github.io](https://vuhung16au.github.io/)
+  - 💼 **LinkedIn**: [linkedin.com/in/nguyenvuhung](https://www.linkedin.com/in/nguyenvuhung/)
+  - 💻 **GitHub**: [github.com/vuhung16au](https://github.com/vuhung16au/)
+  
+  *This notebook is part of the [HF Transformer Trove](https://github.com/vuhung16au/hf-transformer-trove) educational series.*
+  ```
 
 ### Educational Content Standards
 - **Explain Before Code**: Use markdown cells to explain concepts before implementing them in code cells
