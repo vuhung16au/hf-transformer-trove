@@ -36,6 +36,9 @@ tqdm>=4.65.0
 wandb>=0.16.0
 tensorboard>=2.14.0
 
+# Carbon emission tracking
+codecarbon>=2.3.0
+
 # Optional: GPU acceleration (uncomment if using CUDA)
 # torch-audio>=2.1.0
 # torchaudio>=2.1.0
