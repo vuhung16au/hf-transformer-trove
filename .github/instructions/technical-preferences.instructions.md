@@ -3,6 +3,12 @@
 ## Scope
 This instruction file defines the technical preferences and standards for all code implementations in the repository.
 
+## Repository Focus Areas
+All technical implementations should align with the repository's focus areas:
+- **Implementation with HF (Hugging Face)**: Primary framework and ecosystem for all implementations
+- **NLP (Natural Language Processing)**: Core domain focus with comprehensive coverage of NLP tasks
+- **Hate Speech Detection (Preferred)**: Emphasized application area for practical examples and use cases
+
 ## Framework and Technology Preferences
 
 ### Deep Learning Framework
@@ -17,6 +23,7 @@ This instruction file defines the technical preferences and standards for all co
 - **Tokenizers Library**: Utilize `tokenizers` for efficient tokenization when needed
 - **Trainer API**: Implement `Trainer` API for training workflows as the primary approach
 - **Pipeline Approach**: Show both high-level pipeline and manual approaches where applicable
+- **Application Focus**: Prioritize hate speech detection examples when demonstrating classification tasks
 
 ## Device Awareness Implementation
 

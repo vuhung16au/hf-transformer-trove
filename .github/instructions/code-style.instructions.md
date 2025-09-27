@@ -3,6 +3,12 @@
 ## Scope
 This instruction file applies to all Python code files (`.py`) and code cells in Jupyter notebooks throughout the repository.
 
+## Repository Focus Areas
+All code implementations should align with the repository's focus areas:
+- **Implementation with HF (Hugging Face)**: Primary framework and ecosystem for all implementations
+- **NLP (Natural Language Processing)**: Core domain focus with comprehensive coverage of NLP tasks
+- **Hate Speech Detection (Preferred)**: Emphasized application area for practical examples and use cases
+
 ## Python Code Style Guidelines
 
 ### General Python Standards
