@@ -251,11 +251,58 @@ output: "def fibonacci(n): ..."
 
 ## 🔄 Encoder vs Decoder vs Encoder-Decoder
 
-| Architecture | Best For | Attention Type | Example Models |
-|--------------|----------|----------------|----------------|
-| **Encoder-only** | Classification, feature extraction | Bi-directional | BERT, RoBERTa |
-| **Decoder-only** | Text generation, completion | Uni-directional | GPT-2, GPT-3 |
-| **Encoder-Decoder** | Translation, summarization | Both + Cross-attention | T5, BART, mT5 |
+Remember that most Transformer models use one of three architectures: encoder-only, decoder-only, or encoder-decoder (sequence-to-sequence). Understanding these differences will help you choose the right model for your specific task.
+
+### Architecture Comparison Table
+
+| Architecture | **Encoder-only** | **Decoder-only** | **Encoder-Decoder** |
+|--------------|------------------|-------------------|---------------------|
+| **Structure** | Input → Encoder → Output | Input → Decoder → Output | Input → Encoder → Decoder → Output |
+| **Attention Type** | Bi-directional self-attention | Uni-directional (causal) self-attention | Both + Cross-attention |
+| **Training Objective** | Masked Language Modeling (MLM) | Causal Language Modeling (CLM) | Denoising/Seq2Seq objectives |
+| **Input Processing** | Sees full context in both directions | Sees only previous tokens (left-to-right) | Encoder: full context, Decoder: causal |
+| **Output Generation** | Fixed-size representations | Auto-regressive text generation | Auto-regressive with encoder context |
+| **Computational Cost** | Moderate (single pass) | Lower (single pass) | Higher (two components) |
+| **Memory Usage** | Moderate | Lower | Higher |
+
+### Task Suitability by Architecture
+
+| **Task Category** | **Encoder-only** | **Decoder-only** | **Encoder-Decoder** |
+|-------------------|-------------------|-------------------|---------------------|
+| **Text Classification** | ✅ **Best Choice** | ⚠️ Possible with prompting | ❌ Overkill |
+| **Sentiment Analysis** | ✅ **Excellent** (BERT, RoBERTa) | ⚠️ Via zero-shot prompting | ❌ Not recommended |
+| **Hate Speech Detection** | ✅ **Excellent** (DistilBERT, RoBERTa) | ⚠️ Via classification prompts | ❌ Not recommended |
+| **Named Entity Recognition** | ✅ **Best Choice** (BERT, DistilBERT) | ❌ Poor performance | ❌ Not suitable |
+| **Question Answering (Extractive)** | ✅ **Excellent** (BERT-based) | ❌ Cannot extract spans | ❌ Overkill |
+| **Question Answering (Generative)** | ❌ Cannot generate | ✅ **Good** (GPT family) | ✅ **Excellent** (T5, BART) |
+| **Text Generation** | ❌ Not designed for generation | ✅ **Best Choice** (GPT, LLaMA) | ⚠️ Possible but complex |
+| **Creative Writing** | ❌ Cannot generate | ✅ **Excellent** (GPT-3/4, Claude) | ❌ Not optimized |
+| **Code Generation** | ❌ Cannot generate code | ✅ **Excellent** (CodeT5, Codex) | ✅ **Good** (CodeT5) |
+| **Machine Translation** | ❌ Cannot translate | ⚠️ Via prompting | ✅ **Best Choice** (mT5, NLLB) |
+| **Text Summarization** | ❌ Cannot summarize | ⚠️ Via prompting | ✅ **Best Choice** (BART, PEGASUS) |
+| **Paraphrasing** | ❌ Cannot paraphrase | ⚠️ Via prompting | ✅ **Excellent** (T5, BART) |
+| **Text-to-Code** | ❌ Cannot generate | ✅ **Good** (CodeT5-decoder) | ✅ **Excellent** (CodeT5) |
+| **Dialogue Systems** | ❌ Cannot respond | ✅ **Excellent** (DialoGPT, ChatGPT) | ✅ **Good** (T5-based) |
+
+### Popular Models by Architecture
+
+| **Architecture** | **Popular Models** | **Typical Use Cases** |
+|------------------|--------------------|-----------------------|
+| **Encoder-only** | BERT, RoBERTa, DeBERTa, DistilBERT, ELECTRA | Classification, sentiment analysis, NER, feature extraction |
+| **Decoder-only** | GPT-2, GPT-3, GPT-4, LLaMA, Mistral, Gemma | Text generation, chat, creative writing, code generation |
+| **Encoder-Decoder** | T5, BART, mT5, PEGASUS, UL2 | Translation, summarization, question answering, paraphrasing |
+
+### Performance Characteristics
+
+| **Metric** | **Encoder-only** | **Decoder-only** | **Encoder-Decoder** |
+|------------|-------------------|-------------------|---------------------|
+| **Inference Speed** | ⚡ **Fastest** | ⚡ **Fast** | ⚠️ **Slower** |
+| **Memory Efficiency** | ✅ **Efficient** | ✅ **Efficient** | ❌ **Memory intensive** |
+| **Training Complexity** | ✅ **Simple** | ✅ **Simple** | ⚠️ **More complex** |
+| **Context Understanding** | ✅ **Excellent** | ⚠️ **Left-to-right only** | ✅ **Excellent** |
+| **Generation Quality** | ❌ **N/A** | ✅ **High** | ✅ **Very High** |
+
+> **💡 Pro Tip**: For most classification tasks (sentiment analysis, hate speech detection, etc.), encoder-only models like BERT or RoBERTa are the optimal choice due to their bi-directional context understanding and efficiency.
 
 ## 📚 Advanced Topics
 
