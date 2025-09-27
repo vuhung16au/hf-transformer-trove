@@ -68,12 +68,6 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
-
-- Hugging Face team for their amazing ecosystem
-- The open-source community for continuous innovation
-- Contributors and maintainers of transformer models
-
 ---
 
 *Happy learning with Hugging Face! 🤗*
