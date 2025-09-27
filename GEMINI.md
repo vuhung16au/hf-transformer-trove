@@ -6,6 +6,12 @@ This document provides specific guidelines for AI assistants (particularly Googl
 ## Repository Context
 **HF Transformer Trove** is an educational resource focused on learning the Hugging Face ecosystem and natural language processing. The repository serves as comprehensive study notes with practical implementations for ML practitioners and students.
 
+### Repository Focus Areas
+This repository specifically emphasizes:
+- **Implementation with HF (Hugging Face)**: Primary framework and ecosystem for all implementations
+- **NLP (Natural Language Processing)**: Core domain focus with comprehensive coverage of NLP tasks
+- **Hate Speech Detection (Preferred)**: Emphasized application area for practical examples and use cases
+
 ### Target Audience
 - ML practitioners familiar with PyTorch and NLP basics
 - Students learning the Hugging Face ecosystem

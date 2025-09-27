@@ -3,6 +3,12 @@
 ## Scope
 This instruction file provides reusable templates and code snippets for consistent implementation across the repository.
 
+## Repository Focus Areas
+All templates and code snippets should align with the repository's focus areas:
+- **Implementation with HF (Hugging Face)**: Primary framework and ecosystem for all implementations
+- **NLP (Natural Language Processing)**: Core domain focus with comprehensive coverage of NLP tasks
+- **Hate Speech Detection (Preferred)**: Emphasized application area for practical examples and use cases
+
 ## Notebook Templates
 
 ### Notebook Header Template

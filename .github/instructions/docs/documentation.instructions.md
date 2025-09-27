@@ -3,6 +3,12 @@
 ## Scope
 This instruction file applies specifically to all Markdown documentation files (`.md`) in the `docs/` directory.
 
+## Repository Focus Areas
+All documentation should align with the repository's focus areas:
+- **Implementation with HF (Hugging Face)**: Primary framework and ecosystem for all implementations
+- **NLP (Natural Language Processing)**: Core domain focus with comprehensive coverage of NLP tasks
+- **Hate Speech Detection (Preferred)**: Emphasized application area for practical examples and use cases
+
 ## Documentation Standards
 
 ### Content Structure
