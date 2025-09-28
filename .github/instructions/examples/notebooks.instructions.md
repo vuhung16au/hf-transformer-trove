@@ -75,18 +75,21 @@ All notebook examples should align with the repository's focus areas:
 
 #### Standard Notebook Cell Pattern:
 ```python
-# 📱 Load preferred hate speech detection model
+# 📱 Load preferred hate speech detection model with TPU-aware device selection
 model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
 print(f"🔄 Loading {model_name}...")
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
-# Create hate speech detection pipeline
+# Get optimal device (includes TPU detection for Colab)
+device = get_device()
+
+# Create hate speech detection pipeline with device-aware setup
 hate_speech_classifier = pipeline(
     "text-classification",
     model=model_name,
     tokenizer=model_name,
-    device=0 if torch.cuda.is_available() else -1
+    device=device if device.type != 'xla' else 0  # Handle TPU device mapping
 )
 
 print("✅ Hate speech detection model loaded successfully!")
@@ -94,10 +97,17 @@ print("✅ Hate speech detection model loaded successfully!")
 
 ### Platform Compatibility
 - **Multi-platform**: Ensure notebooks run on local environments, Google Colab, AWS SageMaker Studio, and Kaggle
+- **Google Colab TPU**: Always prefer TPU when available in Colab for training and inference
 - **SageMaker Studio Requirements**: Notebooks should be compatible with AWS SageMaker Studio Lab (https://studiolab.sagemaker.aws/)
 - **Dependency Management**: Include clear installation instructions for any additional packages
 - **Credential Handling**: Use secure patterns for API keys and credentials (environment variables, not hardcoded)
 - **Resource Awareness**: Consider computational requirements and provide alternatives for resource-constrained environments
+
+### Google Colab TPU-Specific Guidelines
+- **Runtime Selection**: Include instructions for users to select TPU runtime in Colab
+- **TPU Libraries**: Handle `torch_xla` import failures gracefully with educational messages
+- **Batch Size Optimization**: Recommend larger batch sizes for TPU to maximize utilization
+- **Educational Context**: Explain why TPU is preferred in Colab environments
 
 ### Learning Progressive Complexity
 - **Basic to Advanced**: Structure content from basic concepts to advanced implementations

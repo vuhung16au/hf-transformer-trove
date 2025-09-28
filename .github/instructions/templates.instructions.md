@@ -84,15 +84,40 @@ Connect with me:
 ```python
 import torch
 
+# For Google Colab TPU compatibility
+try:
+    from google.colab import userdata
+    import torch_xla.core.xla_model as xm
+    COLAB_AVAILABLE = True
+    TPU_AVAILABLE = True
+except ImportError:
+    COLAB_AVAILABLE = False
+    TPU_AVAILABLE = False
+
 def get_device() -> torch.device:
     """
     Automatically detect and return the best available device.
     
-    Priority: CUDA > MPS (Apple Silicon) > CPU
+    Device Priority:
+    - General: CUDA GPU > TPU (Colab only) > MPS (Apple Silicon) > CPU
+    - Google Colab: Always prefer TPU when available
     
     Returns:
         torch.device: The optimal device for current hardware
     """
+    # Google Colab: Always prefer TPU when available
+    if COLAB_AVAILABLE and TPU_AVAILABLE:
+        try:
+            # Try to initialize TPU
+            device = xm.xla_device()
+            print("🔥 Using Google Colab TPU for optimal performance")
+            print("💡 TPU is preferred in Colab for training and inference")
+            return device
+        except Exception as e:
+            print(f"⚠️ TPU initialization failed: {e}")
+            print("Falling back to GPU/CPU detection")
+    
+    # Standard device detection for other environments
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print(f"🚀 Using CUDA GPU: {torch.cuda.get_device_name()}")
@@ -101,7 +126,7 @@ def get_device() -> torch.device:
         print("🍎 Using Apple MPS (Apple Silicon)")
     else:
         device = torch.device("cpu")
-        print("💻 Using CPU (consider GPU for better performance)")
+        print("💻 Using CPU (consider GPU/TPU for better performance)")
     
     return device
 
@@ -251,6 +276,122 @@ def process_with_progress(items, process_fn, desc="Processing"):
     return results
 ```
 
+### TPU Training Template (Google Colab)
+```python
+# TPU-specific training template for Google Colab
+import torch_xla.core.xla_model as xm
+import torch_xla.distributed.parallel_loader as pl
+from torch.utils.data import DataLoader
+
+def tpu_training_template(model, train_dataset, num_epochs=3, batch_size=8):
+    """
+    Educational TPU training template for Google Colab.
+    
+    Args:
+        model: HuggingFace model
+        train_dataset: Training dataset
+        num_epochs: Number of training epochs
+        batch_size: Batch size for training
+    """
+    try:
+        # Check if we're on TPU
+        device = xm.xla_device()
+        print(f"🔥 Training on TPU: {device}")
+        
+        # Move model to TPU
+        model = model.to(device)
+        
+        # Create DataLoader
+        train_loader = DataLoader(
+            train_dataset, 
+            batch_size=batch_size, 
+            shuffle=True
+        )
+        
+        # Wrap dataloader for TPU
+        train_loader = pl.ParallelLoader(train_loader, [device]).per_device_loader(device)
+        
+        optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
+        
+        model.train()
+        for epoch in range(num_epochs):
+            print(f"📊 Epoch {epoch + 1}/{num_epochs}")
+            total_loss = 0
+            
+            for step, batch in enumerate(train_loader):
+                # Forward pass
+                outputs = model(**batch)
+                loss = outputs.loss
+                
+                # Backward pass
+                optimizer.zero_grad()
+                loss.backward()
+                
+                # TPU-specific: Mark step to send operations to TPU
+                xm.mark_step()
+                
+                # Update parameters
+                optimizer.step()
+                
+                total_loss += loss.item()
+                
+                if step % 100 == 0:
+                    print(f"  Step {step}, Loss: {loss.item():.4f}")
+            
+            avg_loss = total_loss / len(train_loader)
+            print(f"  Average Loss: {avg_loss:.4f}")
+            
+            # Print TPU metrics for educational purposes
+            print(f"  TPU Memory Usage: {xm.get_memory_info()}")
+        
+        print("✅ TPU training completed!")
+        return model
+        
+    except Exception as e:
+        print(f"❌ TPU training failed: {e}")
+        print("💡 Make sure you're running in Google Colab with TPU runtime enabled")
+        raise
+
+def tpu_inference_template(model, tokenizer, texts, device):
+    """
+    Educational TPU inference template.
+    
+    Args:
+        model: HuggingFace model on TPU
+        tokenizer: HuggingFace tokenizer
+        texts: List of texts to process
+        device: TPU device
+    
+    Returns:
+        List of predictions
+    """
+    model.eval()
+    predictions = []
+    
+    with torch.no_grad():
+        for text in texts:
+            # Tokenize input
+            inputs = tokenizer(
+                text, 
+                return_tensors="pt", 
+                padding=True, 
+                truncation=True, 
+                max_length=512
+            )
+            
+            # Move to TPU
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+            
+            # Forward pass
+            outputs = model(**inputs)
+            predictions.append(outputs)
+            
+            # TPU-specific: Mark step for efficient execution
+            xm.mark_step()
+    
+    return predictions
+```
+
 ## Documentation Templates
 
 ### Mathematical Notation Template
@@ -293,6 +434,12 @@ graph LR
 > ⚠️ **Common Pitfall**: Always move both model and data to the same device to avoid CUDA errors.
 
 > 🚀 **Performance**: Batch processing is significantly faster than processing items individually.
+
+> 🔥 **TPU in Colab**: Always prefer TPU when available in Google Colab for training and inference.
+
+> 💡 **TPU Best Practice**: Use `xm.mark_step()` after `loss.backward()` to ensure operations are sent to TPU.
+
+> ⚠️ **TPU Memory**: TPU works best with consistent tensor shapes and large batch sizes.
 
 > **Key Takeaway**: The Transformer architecture's self-attention mechanism allows it to capture long-range dependencies in sequences.
 ```
