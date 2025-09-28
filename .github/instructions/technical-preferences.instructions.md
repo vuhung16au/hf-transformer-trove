@@ -47,18 +47,50 @@ All technical implementations should align with the repository's focus areas:
 ## Device Awareness Implementation
 
 ### Device Detection Pattern
+
+#### General Device Priority Order
+**Standard Priority**: GPU (CUDA) > TPU (Google Colab) > MPS (Apple Silicon) > CPU
+
+#### Google Colab Specific Policy
+**When training or inferencing on Google Colab, always prefer TPU when available**
+
 ```python
 import torch
+
+# For Google Colab TPU compatibility
+try:
+    from google.colab import userdata
+    import torch_xla.core.xla_model as xm
+    COLAB_AVAILABLE = True
+    TPU_AVAILABLE = True
+except ImportError:
+    COLAB_AVAILABLE = False
+    TPU_AVAILABLE = False
 
 def get_device() -> torch.device:
     """
     Get the best available device for PyTorch operations.
     
-    Priority order: CUDA > MPS (Apple Silicon) > CPU
+    Device Priority:
+    - General: CUDA GPU > TPU (Colab only) > MPS (Apple Silicon) > CPU
+    - Google Colab: Always prefer TPU when available
     
     Returns:
         torch.device: The optimal device for current hardware
     """
+    # Google Colab: Always prefer TPU when available
+    if COLAB_AVAILABLE and TPU_AVAILABLE:
+        try:
+            # Try to initialize TPU
+            device = xm.xla_device()
+            print("🔥 Using Google Colab TPU for optimal performance")
+            print("💡 TPU is preferred in Colab for training and inference")
+            return device
+        except Exception as e:
+            print(f"⚠️ TPU initialization failed: {e}")
+            print("Falling back to GPU/CPU detection")
+    
+    # Standard device detection for other environments
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print(f"🚀 Using CUDA GPU: {torch.cuda.get_device_name()}")
@@ -67,7 +99,7 @@ def get_device() -> torch.device:
         print("🍎 Using Apple MPS for Apple Silicon optimization")
     else:
         device = torch.device("cpu")
-        print("💻 Using CPU - consider GPU for better performance")
+        print("💻 Using CPU - consider GPU/TPU for better performance")
     
     return device
 
@@ -88,9 +120,55 @@ model = AutoModel.from_pretrained(
 # Gradient checkpointing for memory efficiency during training
 model.gradient_checkpointing_enable()
 
-# Clear GPU cache when needed
+# Clear cache based on device type
 if torch.cuda.is_available():
     torch.cuda.empty_cache()
+elif TPU_AVAILABLE and COLAB_AVAILABLE:
+    # TPU memory management in Colab
+    import gc
+    gc.collect()
+    print("🔄 TPU memory cleared")
+```
+
+### TPU-Specific Optimization (Google Colab)
+```python
+# TPU optimization patterns for Google Colab
+def configure_tpu_training():
+    """Configure TPU settings for optimal training in Google Colab."""
+    if COLAB_AVAILABLE and TPU_AVAILABLE:
+        import torch_xla.core.xla_model as xm
+        import torch_xla.distributed.parallel_loader as pl
+        import torch_xla.distributed.xla_multiprocessing as xmp
+        
+        print("🔥 Configuring TPU for training")
+        print(f"📊 TPU cores available: {xm.xrt_world_size()}")
+        
+        # TPU-specific memory management
+        xm.mark_step()  # Ensure operations are sent to TPU
+        
+        return True
+    return False
+
+# Example usage in training loops for TPU
+def tpu_training_step(model, batch, device):
+    """Training step optimized for TPU usage."""
+    if device.type == 'xla':
+        import torch_xla.core.xla_model as xm
+        
+        outputs = model(**batch)
+        loss = outputs.loss
+        loss.backward()
+        
+        # Required for TPU: mark step after backward pass
+        xm.mark_step()
+        
+        return loss.item()
+    else:
+        # Standard GPU/CPU training
+        outputs = model(**batch)
+        loss = outputs.loss
+        loss.backward()
+        return loss.item()
 ```
 
 ## Credential Management Standards
@@ -154,9 +232,52 @@ OPENAI_API_KEY = get_api_key("OPENAI_API_KEY", required=False)
 
 ### Platform-Specific Patterns
 - **Local Development**: Credentials loaded from `.env.local` file
-- **Google Colab**: Credentials loaded from Colab secrets manager
+- **Google Colab**: Credentials loaded from Colab secrets manager + **Always prefer TPU for training/inference**
 - **Kaggle**: Credentials loaded from Kaggle secrets
 - **Never**: Hard-code credentials in notebooks or source code
+
+### Google Colab TPU Optimization Guidelines
+```python
+# Google Colab TPU setup and usage pattern
+def setup_colab_tpu_environment():
+    """
+    Set up Google Colab environment with TPU optimization.
+    
+    Returns:
+        tuple: (device, is_tpu_available)
+    """
+    try:
+        # Import TPU libraries
+        import torch_xla.core.xla_model as xm
+        import torch_xla.distributed.parallel_loader as pl
+        
+        # Initialize TPU
+        device = xm.xla_device()
+        print("🔥 Google Colab TPU initialized successfully")
+        print("💡 TPU provides significant speedup for transformer training")
+        print(f"📊 TPU cores: {xm.xrt_world_size()}")
+        
+        return device, True
+        
+    except ImportError:
+        print("❌ TPU libraries not available")
+        print("💡 Make sure to select TPU runtime in Colab: Runtime -> Change runtime type -> TPU")
+        return get_device(), False
+    except Exception as e:
+        print(f"⚠️ TPU setup failed: {e}")
+        print("🔄 Falling back to GPU/CPU")
+        return get_device(), False
+
+# Educational TPU usage pattern
+def educational_tpu_example():
+    """Educational example showing TPU usage in Google Colab."""
+    print("📚 Google Colab TPU Usage Guidelines:")
+    print("1. Always prefer TPU when available in Colab")
+    print("2. TPU excels at large batch training")
+    print("3. Use torch_xla.core.xla_model.mark_step() after loss.backward()")
+    print("4. TPU works best with consistent tensor shapes")
+    print("5. Monitor TPU utilization for optimal performance")
+```
 
 ## Language and Internationalization Preferences
 
