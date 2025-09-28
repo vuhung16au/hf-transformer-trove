@@ -12,9 +12,10 @@ All notebook examples should align with the repository's focus areas:
 ## Educational Jupyter Notebook Guidelines
 
 ### Notebook Structure Requirements
-- **Always start with badges**: Include "Open in Colab" and "View on GitHub" badges at the top
+- **Always start with badges**: Include "Open in Colab", "Open with SageMaker", and "View on GitHub" badges at the top
   ```markdown
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
+  [![Open with SageMaker](https://img.shields.io/badge/Open%20with-SageMaker-orange?logo=amazonaws)](https://studiolab.sagemaker.aws/import/github/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
   [![View on GitHub](https://img.shields.io/badge/View_on-GitHub-blue?logo=github)](https://github.com/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
   ```
 
@@ -92,7 +93,8 @@ print("✅ Hate speech detection model loaded successfully!")
 ```
 
 ### Platform Compatibility
-- **Multi-platform**: Ensure notebooks run on local environments, Google Colab, and Kaggle
+- **Multi-platform**: Ensure notebooks run on local environments, Google Colab, AWS SageMaker Studio, and Kaggle
+- **SageMaker Studio Requirements**: Notebooks should be compatible with AWS SageMaker Studio Lab (https://studiolab.sagemaker.aws/)
 - **Dependency Management**: Include clear installation instructions for any additional packages
 - **Credential Handling**: Use secure patterns for API keys and credentials (environment variables, not hardcoded)
 - **Resource Awareness**: Consider computational requirements and provide alternatives for resource-constrained environments
@@ -124,7 +126,8 @@ print("✅ Hate speech detection model loaded successfully!")
 - **Community Resources**: Reference PyTorch Mastery and NLP Learning Journey repositories when appropriate
 
 ## Quality Assurance
-- Test notebooks on multiple platforms before finalizing
-- Verify all imports and dependencies are available
+- Test notebooks on multiple platforms before finalizing (local, Colab, SageMaker Studio)
+- Verify all imports and dependencies are available across platforms
 - Ensure educational clarity without sacrificing technical accuracy
 - Validate that examples work with current library versions
+- Test SageMaker Studio compatibility via import link functionality

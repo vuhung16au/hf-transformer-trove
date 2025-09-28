@@ -16,6 +16,7 @@ Add these badges at the top of every Jupyter notebook:
 
 ```markdown
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
+[![Open with SageMaker](https://img.shields.io/badge/Open%20with-SageMaker-orange?logo=amazonaws)](https://studiolab.sagemaker.aws/import/github/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
 [![View on GitHub](https://img.shields.io/badge/View_on-GitHub-blue?logo=github)](https://github.com/vuhung16au/hf-transformer-trove/blob/main/examples/NOTEBOOK_NAME.ipynb)
 
 # Notebook Title
