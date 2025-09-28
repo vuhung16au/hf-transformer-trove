@@ -159,6 +159,169 @@ for param in model.bert.embeddings.parameters():
     param.requires_grad = False
 ```
 
+### Learning Curves
+**Definition**: Graphical representations that show how model performance changes during training, helping diagnose training issues and optimize hyperparameters.
+
+Learning curves plot training metrics (loss, accuracy) against training steps/epochs for both training and validation sets. They are essential for understanding model behavior and preventing overfitting.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+from transformers import Trainer, TrainingArguments, TrainerCallback
+
+class LearningCurveCallback(TrainerCallback):
+    """Custom callback to track learning curves during training."""
+    
+    def __init__(self):
+        self.train_losses = []
+        self.eval_losses = []
+        self.eval_accuracies = []
+        self.steps = []
+    
+    def on_log(self, args, state, control, model=None, logs=None, **kwargs):
+        """Collect metrics at each logging step."""
+        if "train_loss" in logs:
+            self.train_losses.append(logs["train_loss"])
+            self.steps.append(state.global_step)
+        
+        if "eval_loss" in logs:
+            self.eval_losses.append(logs["eval_loss"])
+            self.eval_accuracies.append(logs.get("eval_accuracy", 0))
+    
+    def plot_curves(self, title="Learning Curves - Hate Speech Detection"):
+        """Plot comprehensive learning curves."""
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        fig.suptitle(title, fontsize=16, fontweight='bold')
+        
+        # Training and Validation Loss
+        axes[0, 0].plot(self.steps, self.train_losses, 'b-', label='Training Loss', linewidth=2)
+        if self.eval_losses:
+            eval_steps = self.steps[-len(self.eval_losses):]
+            axes[0, 0].plot(eval_steps, self.eval_losses, 'r-', label='Validation Loss', linewidth=2)
+        axes[0, 0].set_title('Loss Curves')
+        axes[0, 0].set_xlabel('Training Steps')
+        axes[0, 0].set_ylabel('Loss')
+        axes[0, 0].legend()
+        axes[0, 0].grid(True, alpha=0.3)
+        
+        # Validation Accuracy
+        if self.eval_accuracies:
+            eval_steps = self.steps[-len(self.eval_accuracies):]
+            axes[0, 1].plot(eval_steps, self.eval_accuracies, 'g-', linewidth=2)
+            axes[0, 1].set_title('Validation Accuracy')
+            axes[0, 1].set_xlabel('Training Steps')
+            axes[0, 1].set_ylabel('Accuracy')
+            axes[0, 1].grid(True, alpha=0.3)
+        
+        # Loss Gap Analysis (Overfitting Detection)
+        if self.eval_losses:
+            eval_steps = self.steps[-len(self.eval_losses):]
+            train_losses_aligned = self.train_losses[-len(self.eval_losses):]
+            gap = np.array(self.eval_losses) - np.array(train_losses_aligned)
+            axes[1, 0].plot(eval_steps, gap, 'orange', linewidth=2)
+            axes[1, 0].axhline(y=0, color='black', linestyle='--', alpha=0.5)
+            axes[1, 0].set_title('Overfitting Detection\n(Val Loss - Train Loss)')
+            axes[1, 0].set_xlabel('Training Steps')
+            axes[1, 0].set_ylabel('Loss Gap')
+            axes[1, 0].grid(True, alpha=0.3)
+        
+        # Learning Rate Schedule (if available)
+        axes[1, 1].text(0.5, 0.5, 'Learning Rate\nSchedule\n(Add LR tracking)', 
+                       ha='center', va='center', transform=axes[1, 1].transAxes,
+                       fontsize=12, style='italic')
+        axes[1, 1].set_title('Learning Rate Schedule')
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # Print interpretation
+        self._interpret_curves()
+    
+    def _interpret_curves(self):
+        """Provide educational interpretation of the curves."""
+        print("\n📊 Learning Curves Interpretation Guide:")
+        print("=" * 50)
+        
+        if self.eval_losses and self.train_losses:
+            latest_train_loss = self.train_losses[-1]
+            latest_val_loss = self.eval_losses[-1]
+            gap = latest_val_loss - latest_train_loss
+            
+            print(f"🔍 Current Status:")
+            print(f"   Training Loss: {latest_train_loss:.4f}")
+            print(f"   Validation Loss: {latest_val_loss:.4f}")
+            print(f"   Gap: {gap:.4f}")
+            
+            if gap > 0.1:
+                print("\n⚠️ Signs of Overfitting:")
+                print("   • Validation loss higher than training loss")
+                print("   • Consider: Early stopping, regularization, more data")
+            elif gap < -0.05:
+                print("\n🤔 Possible Underfitting:")
+                print("   • Model may not be learning effectively")
+                print("   • Consider: Lower regularization, more training")
+            else:
+                print("\n✅ Good Training Balance:")
+                print("   • Training and validation losses are aligned")
+        
+        print(f"\n💡 General Tips:")
+        print(f"   • Smooth decreasing curves = good learning")
+        print(f"   • Plateauing = may need learning rate adjustment")
+        print(f"   • Oscillating curves = learning rate too high")
+        print(f"   • Increasing validation loss = overfitting")
+
+# Example usage with hate speech detection
+from datasets import load_dataset
+
+# Load preferred hate speech dataset
+dataset = load_dataset("tdavidson/hate_speech_offensive", split="train[:1000]")
+
+# Initialize learning curve callback
+learning_callback = LearningCurveCallback()
+
+# Training arguments with frequent evaluation
+training_args = TrainingArguments(
+    output_dir="./hate_speech_model",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    evaluation_strategy="steps",
+    eval_steps=100,  # Evaluate every 100 steps for detailed curves
+    logging_steps=50,   # Log every 50 steps
+    save_strategy="steps",
+    save_steps=500,
+    load_best_model_at_end=True,
+    metric_for_best_model="eval_accuracy",
+)
+
+# Add callback to trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=dataset,
+    eval_dataset=dataset.select(range(200)),  # Small eval set for demo
+    callbacks=[learning_callback],
+)
+
+# After training, plot learning curves
+# trainer.train()
+# learning_callback.plot_curves("Hate Speech Detection Learning Curves")
+```
+
+**Common Learning Curve Patterns**:
+
+1. **Healthy Learning**: Both curves decrease smoothly, with validation slightly above training
+2. **Overfitting**: Training loss continues decreasing while validation loss increases
+3. **Underfitting**: Both curves plateau at high loss values
+4. **High Variance**: Large gap between training and validation performance
+5. **High Bias**: Both curves converge to suboptimal performance
+
+**Practical Tips**:
+- Plot curves frequently during training to catch issues early
+- Use validation curves to determine optimal stopping point
+- Compare multiple runs to ensure reproducibility
+- Monitor both loss and task-specific metrics (accuracy, F1-score)
+- Use curves to tune hyperparameters like learning rate and batch size
+
 ## Advanced Techniques
 
 ### PEFT (Parameter Efficient Fine-Tuning)
