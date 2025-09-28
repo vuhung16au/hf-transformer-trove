@@ -47,6 +47,38 @@ All documentation should align with the repository's focus areas:
 - **API Documentation**: Reference official HF documentation for deeper exploration
 - **Best Practices**: Include HF community best practices and common patterns
 
+### Preferred Models and Datasets for Examples
+
+#### Hate Speech Detection Models (use in order of preference):
+1. **cardiffnlp/twitter-roberta-base-hate-latest** - For Twitter-like social media content
+2. **facebook/roberta-hate-speech-dynabench-r4-target** - For robust general hate speech detection
+3. **GroNLP/hateBERT** - For educational examples showing specialized architectures
+4. **Hate-speech-CNERG/dehatebert-mono-english** - For DeBERTa-based approaches
+5. **cardiffnlp/twitter-roberta-base-offensive** - As alternative for offensive language detection
+
+#### Hate Speech Datasets (use in order of preference):
+1. **tdavidson/hate_speech_offensive** - Well-established benchmark dataset
+2. **Hate-speech-CNERG/hatexplain** - Includes explanations for interpretability examples
+3. **TrustAIRLab/HateBenchSet** - Comprehensive benchmark for evaluation examples
+4. **iamollas/ethos** - For ethical AI discussions and bias analysis
+
+#### Code Example Template for Documentation:
+```python
+# Educational code with comprehensive comments
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from datasets import load_dataset
+
+# Load preferred hate speech detection model
+# cardiffnlp/twitter-roberta-base-hate-latest is optimized for social media content
+model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+# Load preferred hate speech dataset
+# tdavidson/hate_speech_offensive is a well-established benchmark
+dataset = load_dataset("tdavidson/hate_speech_offensive", split="train")
+```
+
 ### Visual and Interactive Elements
 - **Diagrams**: Use Mermaid diagrams for:
   - Model architectures

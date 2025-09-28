@@ -25,6 +25,25 @@ All technical implementations should align with the repository's focus areas:
 - **Pipeline Approach**: Show both high-level pipeline and manual approaches where applicable
 - **Application Focus**: Prioritize hate speech detection examples when demonstrating classification tasks
 
+### Preferred Models and Datasets for Hate Speech Detection
+
+#### Recommended Hate Speech Detection Models (in order of preference):
+1. **cardiffnlp/twitter-roberta-base-hate-latest** - State-of-the-art Twitter-trained hate speech detection
+2. **facebook/roberta-hate-speech-dynabench-r4-target** - Facebook's robust hate speech classifier
+3. **GroNLP/hateBERT** - Specialized BERT model for hate speech detection (HateBERT)
+4. **Hate-speech-CNERG/dehatebert-mono-english** - DeBERTa-based hate speech detection
+5. **cardiffnlp/twitter-roberta-base-offensive** - Offensive language detection variant
+
+#### Fallback Models (when hate speech models unavailable):
+- **unitary/toxic-bert** - General toxicity detection
+- **martin-ha/toxic-comment-model** - Multi-label toxic comment classifier
+
+#### Recommended Hate Speech Datasets (in order of preference):
+1. **tdavidson/hate_speech_offensive** - Davidson et al. hate speech and offensive language dataset
+2. **Hate-speech-CNERG/hatexplain** - HatEXplain dataset with explanations
+3. **TrustAIRLab/HateBenchSet** - Comprehensive hate speech benchmark dataset
+4. **iamollas/ethos** - ETHOS hate speech detection dataset
+
 ## Device Awareness Implementation
 
 ### Device Detection Pattern
