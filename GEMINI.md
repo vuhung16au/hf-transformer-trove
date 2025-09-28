@@ -43,15 +43,16 @@ This repository specifically emphasizes:
 ### Code Generation
 When generating code:
 ```python
-# ✅ GOOD: Educational with comprehensive comments
+# ✅ GOOD: Educational with comprehensive comments using preferred hate speech models
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 
-# Load pre-trained BERT model for sequence classification
-# This downloads the model if not cached locally (~400MB)
+# Load preferred hate speech detection model - optimized for social media content
+# cardiffnlp/twitter-roberta-base-hate-latest is the top choice for hate speech detection
+model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
 model = AutoModelForSequenceClassification.from_pretrained(
-    "bert-base-uncased",
-    num_labels=2,        # Binary classification
+    model_name,
+    num_labels=3,        # Hate, offensive, neither classification
     output_attentions=False,    # Save memory by not returning attention weights
     output_hidden_states=False  # Save memory by not returning hidden states
 )
@@ -62,6 +63,34 @@ device = torch.device("cuda" if torch.cuda.is_available()
                      else "cpu")
 model = model.to(device)
 print(f"Using device: {device}")
+```
+
+### Preferred Models and Datasets
+
+#### Recommended Hate Speech Models (use in order of preference):
+1. **cardiffnlp/twitter-roberta-base-hate-latest** - Best for social media hate speech detection
+2. **facebook/roberta-hate-speech-dynabench-r4-target** - Robust general-purpose hate speech classifier  
+3. **GroNLP/hateBERT** - Specialized BERT architecture for hate speech (HateBERT)
+4. **Hate-speech-CNERG/dehatebert-mono-english** - DeBERTa-based hate speech detection
+5. **cardiffnlp/twitter-roberta-base-offensive** - Alternative for offensive language detection
+
+#### Recommended Hate Speech Datasets (use in order of preference):
+1. **tdavidson/hate_speech_offensive** - Davidson et al. benchmark dataset
+2. **Hate-speech-CNERG/hatexplain** - Includes explanations for interpretability
+3. **TrustAIRLab/HateBenchSet** - Comprehensive benchmark suite
+4. **iamollas/ethos** - ETHOS dataset for ethical considerations
+
+#### Dataset Loading Example:
+```python
+from datasets import load_dataset
+
+# Load preferred hate speech dataset
+dataset_name = "tdavidson/hate_speech_offensive"
+dataset = load_dataset(dataset_name)
+
+print(f"📊 Dataset: {dataset_name}")
+print(f"🔢 Training examples: {len(dataset['train'])}")
+print(f"📋 Features: {dataset['train'].features}")
 ```
 
 ### Documentation Writing

@@ -57,6 +57,40 @@ All notebook examples should align with the repository's focus areas:
 - **Model Loading**: Show proper model and tokenizer loading patterns
 - **Dataset Integration**: Use Hugging Face Datasets library when appropriate
 
+### Preferred Models and Datasets for Notebook Examples
+
+#### Hate Speech Detection Models (use in order of preference):
+1. **cardiffnlp/twitter-roberta-base-hate-latest** - Best for social media content examples
+2. **facebook/roberta-hate-speech-dynabench-r4-target** - For robust hate speech classification
+3. **GroNLP/hateBERT** - Educational examples of specialized architectures
+4. **Hate-speech-CNERG/dehatebert-mono-english** - DeBERTa-based hate speech detection
+5. **cardiffnlp/twitter-roberta-base-offensive** - Alternative for offensive language detection
+
+#### Hate Speech Datasets (use in order of preference):
+1. **tdavidson/hate_speech_offensive** - Standard benchmark for classification examples
+2. **Hate-speech-CNERG/hatexplain** - Includes explanations for interpretability notebooks
+3. **TrustAIRLab/HateBenchSet** - Comprehensive evaluation examples
+4. **iamollas/ethos** - For bias analysis and ethical AI notebooks
+
+#### Standard Notebook Cell Pattern:
+```python
+# 📱 Load preferred hate speech detection model
+model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
+print(f"🔄 Loading {model_name}...")
+
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+
+# Create hate speech detection pipeline
+hate_speech_classifier = pipeline(
+    "text-classification",
+    model=model_name,
+    tokenizer=model_name,
+    device=0 if torch.cuda.is_available() else -1
+)
+
+print("✅ Hate speech detection model loaded successfully!")
+```
+
 ### Platform Compatibility
 - **Multi-platform**: Ensure notebooks run on local environments, Google Colab, and Kaggle
 - **Dependency Management**: Include clear installation instructions for any additional packages

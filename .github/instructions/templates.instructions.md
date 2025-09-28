@@ -156,7 +156,7 @@ def get_api_key(key_name: str, required: bool = True) -> Optional[str]:
 
 ### Model Loading Template
 ```python
-from transformers import AutoTokenizer, AutoModel, AutoConfig
+from transformers import AutoTokenizer, AutoModel, AutoConfig, AutoModelForSequenceClassification
 
 def load_model_with_error_handling(model_name: str, **kwargs):
     """
@@ -172,9 +172,9 @@ def load_model_with_error_handling(model_name: str, **kwargs):
     try:
         print(f"📥 Loading model: {model_name}")
         
-        # Load components
+        # Load components - use AutoModelForSequenceClassification for hate speech detection
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModel.from_pretrained(model_name, **kwargs)
+        model = AutoModelForSequenceClassification.from_pretrained(model_name, **kwargs)
         config = AutoConfig.from_pretrained(model_name)
         
         # Move to optimal device
@@ -190,6 +190,31 @@ def load_model_with_error_handling(model_name: str, **kwargs):
         print(f"❌ Error loading model {model_name}: {e}")
         print("💡 Try checking model name or network connection")
         raise
+
+### Preferred Hate Speech Detection Models
+PREFERRED_HATE_SPEECH_MODELS = [
+    "cardiffnlp/twitter-roberta-base-hate-latest",
+    "facebook/roberta-hate-speech-dynabench-r4-target", 
+    "GroNLP/hateBERT",
+    "Hate-speech-CNERG/dehatebert-mono-english",
+    "cardiffnlp/twitter-roberta-base-offensive"
+]
+
+def load_hate_speech_model(model_name: str = None):
+    """
+    Load preferred hate speech detection model with fallback options.
+    
+    Args:
+        model_name: Specific model to load, defaults to preferred model
+        
+    Returns:
+        Tuple of (tokenizer, model, config)
+    """
+    if model_name is None:
+        model_name = PREFERRED_HATE_SPEECH_MODELS[0]  # Default to top preference
+    
+    print(f"🛡️ Loading hate speech detection model: {model_name}")
+    return load_model_with_error_handling(model_name)
 ```
 
 ### Progress Tracking Template
@@ -331,6 +356,14 @@ def safe_model_inference(model, tokenizer, text, max_length=512):
 ```python
 from datasets import load_dataset
 
+# Preferred hate speech datasets in order of preference
+PREFERRED_HATE_SPEECH_DATASETS = [
+    "tdavidson/hate_speech_offensive",
+    "Hate-speech-CNERG/hatexplain", 
+    "TrustAIRLab/HateBenchSet",
+    "iamollas/ethos"
+]
+
 def load_dataset_safely(dataset_name, split='train', streaming=False):
     """
     Load dataset with error handling and fallback options.
@@ -361,6 +394,23 @@ def load_dataset_safely(dataset_name, split='train', streaming=False):
         print("  - Verify dataset exists on HuggingFace Hub")
         print("  - Try with streaming=True for large datasets")
         return None
+
+def load_hate_speech_dataset(dataset_name: str = None, split: str = 'train'):
+    """
+    Load preferred hate speech dataset with fallback options.
+    
+    Args:
+        dataset_name: Specific dataset to load, defaults to preferred dataset
+        split: Dataset split to load
+        
+    Returns:
+        Dataset object or None if failed
+    """
+    if dataset_name is None:
+        dataset_name = PREFERRED_HATE_SPEECH_DATASETS[0]  # Default to top preference
+    
+    print(f"🛡️ Loading hate speech dataset: {dataset_name}")
+    return load_dataset_safely(dataset_name, split=split)
 ```
 
 ## Evaluation Templates
