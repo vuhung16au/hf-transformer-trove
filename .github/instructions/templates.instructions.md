@@ -80,6 +80,65 @@ Connect with me:
 
 ## Code Templates
 
+### Random Seed Policy
+**All random number generation operations in the repository must use `seed=16` for consistency and reproducibility.**
+
+Examples of operations that require `seed=16`:
+- Dataset shuffling: `dataset.shuffle(seed=16)`
+- Train/test splits: `dataset.train_test_split(test_size=0.2, seed=16)`
+- PyTorch manual seed: `torch.manual_seed(16)`
+- NumPy random seed: `np.random.seed(16)` 
+- Random state parameters: `random_state=16`
+- Any other random operations in notebooks and code
+
+### Random Seed Template
+```python
+# Repository standard: Always use seed=16 for reproducible results
+import torch
+import numpy as np
+import random
+
+# Set all random seeds for reproducibility
+def set_seed(seed_value: int = 16):
+    """
+    Set seed for reproducibility across all random number generators.
+    
+    Args:
+        seed_value: Seed value to use (repository standard is 16)
+    """
+    # Python built-in random
+    random.seed(seed_value)
+    
+    # NumPy random
+    np.random.seed(seed_value)
+    
+    # PyTorch random
+    torch.manual_seed(seed_value)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed_value)
+        torch.cuda.manual_seed_all(seed_value)  # For multi-GPU setups
+    
+    # For reproducible behavior on CuDNN backend
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+    print(f"🔢 Random seed set to {seed_value} for reproducibility")
+
+# Usage: Call at the beginning of notebooks
+set_seed(16)
+
+# Dataset operations with seed=16
+drug_sample = drug_dataset["train"].shuffle(seed=16).select(range(1000))
+split_dataset = dataset.train_test_split(test_size=0.2, seed=16)
+
+# Training arguments with seed=16
+training_args = TrainingArguments(
+    output_dir="./results",
+    seed=16,  # Repository standard seed
+    # ... other arguments
+)
+```
+
 ### Device Detection Template
 ```python
 import torch

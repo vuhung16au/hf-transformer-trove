@@ -106,6 +106,23 @@ model.train()  # Sets model to training mode (enables dropout, batch norm update
 - **Testing Patterns**: Include validation and testing examples where appropriate
 - **Resource Management**: Demonstrate proper memory and computational efficiency
 - **Version Compatibility**: Ensure compatibility with specified library versions
+- **Random Seed Consistency**: Always use `seed=16` for any random number generation operations
+
+### Random Seed Requirements
+All code must follow the repository's `seed=16` standard:
+
+```python
+# ✅ CORRECT: Repository standard seed=16
+dataset_sample = dataset.shuffle(seed=16).select(range(1000))
+torch.manual_seed(16)
+np.random.seed(16)
+train_test_split(data, test_size=0.2, random_state=16)
+
+# ❌ INCORRECT: Using different seeds
+dataset_sample = dataset.shuffle(seed=42).select(range(1000))  # Wrong seed
+torch.manual_seed(123)  # Wrong seed  
+np.random.seed(999)  # Wrong seed
+```
 
 ### Avoid in Code
 - Overly complex examples that obscure learning objectives
