@@ -97,9 +97,10 @@ print("✅ Hate speech detection model loaded successfully!")
 
 ### Platform Compatibility
 - **Multi-platform**: Ensure notebooks run on local environments, Google Colab, AWS SageMaker Studio, and Kaggle
+- **Local Development Preferences**: Mac OS X (Apple Silicon) > Windows > Linux for optimal local development experience
 - **Google Colab TPU**: Always prefer TPU when available in Colab for training and inference
 - **SageMaker Studio Requirements**: Notebooks should be compatible with AWS SageMaker Studio Lab (https://studiolab.sagemaker.aws/)
-- **Dependency Management**: Include clear installation instructions for any additional packages
+- **Dependency Management**: Include clear installation instructions for any additional packages (prefer `uv` over `pip`)
 - **Credential Handling**: Use secure patterns for API keys and credentials (environment variables, not hardcoded)
 - **Resource Awareness**: Consider computational requirements and provide alternatives for resource-constrained environments
 

@@ -230,6 +230,12 @@ HF_API_KEY = get_api_key("HUGGING_FACE_API_KEY", required=False)
 OPENAI_API_KEY = get_api_key("OPENAI_API_KEY", required=False)
 ```
 
+### Local Development Platform Preferences
+- **Primary Platform**: Mac OS X (Apple Silicon chip) - Preferred for local development
+- **Secondary Platform**: Windows - Second choice for local development  
+- **Third Platform**: Linux - Third choice for local development
+- **Justification**: Apple Silicon provides optimal performance for ML workloads with MPS acceleration, followed by Windows for accessibility, then Linux for server environments
+
 ### Platform-Specific Patterns
 - **Local Development**: Credentials loaded from `.env.local` file
 - **Google Colab**: Credentials loaded from Colab secrets manager + **Always prefer TPU for training/inference**
@@ -308,6 +314,11 @@ def process_multilingual_text(text: str, lang: str = 'en') -> str:
 
 ## Dependency Management Standards
 
+### Python Package Manager Preferences
+- **Primary Package Manager**: `uv` over `pip` for all Python package management
+- **Justification**: uv provides faster installation, better dependency resolution, and improved caching
+- **Fallback**: Use `pip` only when uv is not available or compatible
+
 ### Dependency Philosophy
 - **Minimal Dependencies**: Keep dependencies focused and minimal
 - **Version Pinning**: Pin versions for reproducibility in requirements.txt
@@ -355,8 +366,9 @@ def check_and_install_requirements():
     
     if missing_packages:
         print(f"📦 Installing missing packages: {missing_packages}")
-        # In notebooks, show pip install command instead of executing
-        print(f"Please run: pip install {' '.join(missing_packages)}")
+        # In notebooks, show uv install command (preferred) with pip fallback
+        print(f"Please run: uv add {' '.join(missing_packages)}")
+        print(f"Or with pip: pip install {' '.join(missing_packages)}")
 ```
 
 ## Performance and Optimization Standards
