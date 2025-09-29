@@ -11,6 +11,12 @@ All technical implementations should align with the repository's focus areas:
 
 ## Framework and Technology Preferences
 
+### Random Seed Standards
+- **Repository Standard Seed**: Use `seed=16` for ALL random number generation operations
+- **Consistency Requirement**: All notebooks, scripts, and code examples must use `seed=16`
+- **Reproducibility**: This ensures consistent results across different runs and environments
+- **Coverage**: Applies to dataset shuffling, train/test splits, model initialization, PyTorch/NumPy/Python random operations
+
 ### Deep Learning Framework
 - **Primary Framework**: PyTorch over TensorFlow for all deep learning implementations
 - **Justification**: Better educational value, more intuitive for learning, stronger HF ecosystem integration
@@ -372,6 +378,59 @@ def check_and_install_requirements():
 ```
 
 ## Performance and Optimization Standards
+
+### Random Seed Management
+```python
+# Repository standard seed management pattern
+def setup_reproducible_environment(seed: int = 16):
+    """
+    Setup reproducible environment with repository standard seed=16.
+    
+    Args:
+        seed: Random seed value (default 16 per repository policy)
+    """
+    import torch
+    import numpy as np
+    import random
+    import os
+    
+    # Set Python built-in random seed
+    random.seed(seed)
+    
+    # Set NumPy random seed  
+    np.random.seed(seed)
+    
+    # Set PyTorch random seeds
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+    
+    # Set environment variable for Python hash randomization
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    
+    # Configure CuDNN for reproducibility
+    if torch.cuda.is_available():
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        
+    print(f"🔢 Reproducible environment setup complete with seed={seed}")
+
+# Standard usage in all notebooks and scripts
+setup_reproducible_environment(16)  # Repository standard
+
+# Dataset operations always use seed=16
+train_dataset = dataset["train"].shuffle(seed=16).select(range(1000))
+eval_dataset = dataset["validation"].shuffle(seed=16).select(range(500))
+
+# Model training with seed=16
+training_args = TrainingArguments(
+    output_dir="./results",
+    seed=16,  # Repository standard
+    data_seed=16,  # For data loading reproducibility
+    # ... other arguments
+)
+```
 
 ### Timing and Profiling Patterns
 ```python

@@ -30,6 +30,15 @@ All documentation should align with the repository's focus areas:
   - Use modern Hugging Face APIs and best practices
   - Include proper error handling
   - Show device awareness (CUDA/MPS/CPU optimization)
+  - **Use `seed=16` for all random operations** (repository standard)
+
+- **Random Seed Policy**: All documentation code examples must use `seed=16`:
+  ```python
+  # ✅ Required: Use seed=16 for reproducibility
+  dataset.shuffle(seed=16)
+  torch.manual_seed(16)
+  train_test_split(data, test_size=0.2, random_state=16)
+  ```
 
 - **Code Blocks**: Use proper syntax highlighting:
   ```python
@@ -64,9 +73,16 @@ All documentation should align with the repository's focus areas:
 
 #### Code Example Template for Documentation:
 ```python
-# Educational code with comprehensive comments
+# Educational code with comprehensive comments and repository seed standard
+import torch
+import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from datasets import load_dataset
+
+# Set reproducible environment with repository standard seed=16
+torch.manual_seed(16)
+np.random.seed(16)
+print("🔢 Using seed=16 for reproducible results (repository standard)")
 
 # Load preferred hate speech detection model
 # cardiffnlp/twitter-roberta-base-hate-latest is optimized for social media content
@@ -77,6 +93,10 @@ model = AutoModelForSequenceClassification.from_pretrained(model_name)
 # Load preferred hate speech dataset
 # tdavidson/hate_speech_offensive is a well-established benchmark
 dataset = load_dataset("tdavidson/hate_speech_offensive", split="train")
+
+# Sample data with repository standard seed=16 for reproducibility
+sample_data = dataset.shuffle(seed=16).select(range(1000))
+print(f"📊 Sampled {len(sample_data)} examples with seed=16")
 ```
 
 ### Visual and Interactive Elements

@@ -48,8 +48,40 @@ All notebook examples should align with the repository's focus areas:
 ### Code Quality for Learning
 - **Comprehensive Error Handling**: Handle errors gracefully with informative messages that help learning
 - **Device Awareness**: Automatically detect and use optimal device (CUDA, MPS, CPU)
+- **Random Seed Consistency**: **All notebooks must use `seed=16` for any random operations** (shuffling, splits, model training, etc.)
 - **Memory Efficiency**: Include memory considerations and optimization tips
 - **Performance Timing**: Add timing information for expensive operations to teach performance awareness
+
+### Repository Seed Standard
+**Critical Requirement**: All Jupyter notebooks must use `seed=16` for random number generation operations:
+
+```python
+# ✅ REQUIRED: Use seed=16 for all random operations in notebooks
+import torch
+import numpy as np
+import random
+
+# Set reproducible environment at start of notebook
+torch.manual_seed(16)
+np.random.seed(16) 
+random.seed(16)
+
+# Dataset operations
+drug_sample = drug_dataset["train"].shuffle(seed=16).select(range(1000))
+train_dataset, eval_dataset = dataset.train_test_split(test_size=0.2, seed=16)
+
+# Training configuration
+training_args = TrainingArguments(
+    output_dir="./results",
+    seed=16,  # Repository standard
+    data_seed=16,  # For data loading reproducibility
+    # ... other arguments
+)
+
+# Scikit-learn operations
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=16)
+```
 
 ### Hugging Face Best Practices
 - **Modern APIs**: Use the latest Hugging Face APIs and patterns
@@ -75,6 +107,16 @@ All notebook examples should align with the repository's focus areas:
 
 #### Standard Notebook Cell Pattern:
 ```python
+# 🔢 Set reproducible environment with repository standard seed=16
+import torch
+import numpy as np
+import random
+
+torch.manual_seed(16)
+np.random.seed(16)
+random.seed(16)
+print("🔢 Random seed set to 16 for reproducibility")
+
 # 📱 Load preferred hate speech detection model with TPU-aware device selection
 model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
 print(f"🔄 Loading {model_name}...")
@@ -93,6 +135,13 @@ hate_speech_classifier = pipeline(
 )
 
 print("✅ Hate speech detection model loaded successfully!")
+
+# 📊 Example dataset operations with seed=16
+if 'dataset' in globals():
+    # Always use seed=16 for reproducible data sampling
+    sample_data = dataset["train"].shuffle(seed=16).select(range(100))
+    train_data, eval_data = dataset.train_test_split(test_size=0.2, seed=16)
+    print(f"📈 Dataset prepared with seed=16: {len(sample_data)} samples")
 ```
 
 ### Platform Compatibility
