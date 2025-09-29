@@ -415,7 +415,8 @@ def print_gpu_memory_usage():
 - **Official HF Docs**: Always reference official Hugging Face documentation for deeper exploration
 
 ### Version Compatibility
-- **Python**: 3.8+ required
+- **Python**: 3.9+ required (default for local development on Mac, Windows, Linux)
+- **Compatibility**: Code *SHOULD* be compatible with newer Python versions (3.9, 3.10, 3.11, 3.12)
 - **PyTorch**: Latest stable version preferred
 - **Transformers**: 4.20.0+ for modern APIs
 - **Datasets**: 2.0.0+ for latest features

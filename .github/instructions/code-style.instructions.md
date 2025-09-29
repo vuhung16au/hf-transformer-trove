@@ -12,7 +12,8 @@ All code implementations should align with the repository's focus areas:
 ## Python Code Style Guidelines
 
 ### General Python Standards
-- **Python Version**: Use Python 3.8+ features
+- **Python Version**: Use Python 3.9+ features (default for local development on Mac, Windows, Linux)
+- **Compatibility**: Code *SHOULD* be compatible with newer Python versions (3.9, 3.10, 3.11, 3.12)
 - **PEP 8 Compliance**: Follow PEP 8 style guidelines
 - **Object-Oriented Approach**: Prefer OOP implementation - use classes and objects when appropriate
 - **Type Hints**: Include type hints where beneficial for learning and code clarity
