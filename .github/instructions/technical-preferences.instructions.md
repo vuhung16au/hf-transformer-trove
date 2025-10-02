@@ -22,6 +22,13 @@ All technical implementations should align with the repository's focus areas:
 - **Justification**: Better educational value, more intuitive for learning, stronger HF ecosystem integration
 - **Visualization**: Use TensorBoard integration for comprehensive training visualization when possible
 
+### Visualization Standards
+- **Primary Style**: Use `sns.set_style('darkgrid')` as the default for all matplotlib/seaborn visualizations
+- **Color Palette**: Use `sns.set_palette("husl")` for consistent, accessible colors across all plots
+- **Justification**: The darkgrid style provides better readability for educational content with clear gridlines that help interpret data points
+- **Setup Pattern**: Configure visualization style at the start of every notebook that includes plots
+- **Consistency**: Apply these settings uniformly across all notebooks and documentation
+
 ### Hugging Face Ecosystem Preferences
 - **Transformers Library**: Prefer `transformers` library over direct PyTorch/TensorFlow implementations
 - **Auto Classes**: Use `AutoTokenizer`, `AutoModel`, `AutoConfig` for flexibility and best practices
@@ -343,6 +350,10 @@ from datasets import load_dataset
 # Visualization dependencies (for educational notebooks)
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Configure visualization style (repository standard)
+sns.set_style('darkgrid')  # Use darkgrid for better readability
+sns.set_palette("husl")     # Consistent, accessible color palette
 
 # Utility dependencies (as needed)
 from tqdm.auto import tqdm  # Progress bars

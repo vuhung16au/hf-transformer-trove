@@ -676,6 +676,27 @@ def evaluate_classification(y_true, y_pred, labels=None):
 
 ## Visualization Templates
 
+### Visualization Setup Template
+Use this template at the beginning of notebooks to configure visualization style consistently:
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set up plotting style for educational visualizations
+# Repository standard: Use seaborn darkgrid style for better readability
+sns.set_style('darkgrid')
+sns.set_palette("husl")
+
+print("📊 Visualization style configured: darkgrid with husl palette")
+```
+
+**Visualization Policy:**
+- **Primary Style**: Use `sns.set_style('darkgrid')` as the default for all visualizations
+- **Color Palette**: Use `sns.set_palette("husl")` for consistent, accessible colors
+- **Justification**: The darkgrid style provides better readability for educational content with clear gridlines that help interpret data points
+- **Consistency**: Apply this style at the start of every notebook that includes visualizations
+
 ### Training Progress Visualization Template
 ```python
 import matplotlib.pyplot as plt

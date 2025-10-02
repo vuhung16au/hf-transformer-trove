@@ -52,6 +52,13 @@ All notebook examples should align with the repository's focus areas:
 - **Memory Efficiency**: Include memory considerations and optimization tips
 - **Performance Timing**: Add timing information for expensive operations to teach performance awareness
 
+### Visualization Standards for Notebooks
+- **Style Configuration**: Use `sns.set_style('darkgrid')` at the start of every notebook with visualizations
+- **Color Palette**: Use `sns.set_palette("husl")` for consistent, accessible colors
+- **Setup Pattern**: Configure visualization style immediately after imports and device setup
+- **Consistency**: Apply darkgrid style uniformly across all plots and figures in the notebook
+- **Template Reference**: See `.github/instructions/templates.instructions.md` for complete visualization setup template
+
 ### Repository Seed Standard
 **Critical Requirement**: All Jupyter notebooks must use `seed=16` for random number generation operations:
 
@@ -111,11 +118,18 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 import torch
 import numpy as np
 import random
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 torch.manual_seed(16)
 np.random.seed(16)
 random.seed(16)
 print("🔢 Random seed set to 16 for reproducibility")
+
+# 📊 Configure visualization style (repository standard)
+sns.set_style('darkgrid')  # Better readability with gridlines
+sns.set_palette("husl")     # Consistent, accessible colors
+print("📊 Visualization style configured: darkgrid with husl palette")
 
 # 📱 Load preferred hate speech detection model with TPU-aware device selection
 model_name = "cardiffnlp/twitter-roberta-base-hate-latest"
